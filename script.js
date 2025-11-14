@@ -2,9 +2,11 @@ const form = document.getElementById('formUsuario');
 const campos = ['nombre', 'email', 'edad'];
 const barra = document.getElementById('barraProgreso');
 const contenedorDatos = document.getElementById('datosMostrados');
-const toggleBtn = document.getElementById('toggleDatos'); // usado en varios lugares
+const toggleBtn = document.getElementById('toggleDatos');
 
-// Validar campos
+// ------------------------------------------------------
+// VALIDAR CAMPOS
+// ------------------------------------------------------
 function validarCampo(id, mensaje) {
   const campo = document.getElementById(id);
   const error = document.getElementById(`error-${id}`);
@@ -17,25 +19,30 @@ function validarCampo(id, mensaje) {
   }
 }
 
-// Actualizar barra de progreso
+// ------------------------------------------------------
+// BARRA DE PROGRESO
+// ------------------------------------------------------
 function actualizarBarra() {
   let completados = 0;
   campos.forEach(campo => {
-    if (document.getElementById(campo).value.trim() !== "") completados++; 
+    if (document.getElementById(campo).value.trim() !== "") completados++;
   });
   const porcentaje = (completados / campos.length) * 100;
   barra.style.width = `${porcentaje}%`;
 }
-
 form.addEventListener('input', actualizarBarra);
 
-// Guardar usuario
+// ------------------------------------------------------
+// GUARDAR DATOS
+// ------------------------------------------------------
 document.getElementById('guardar').addEventListener('click', () => {
   let valido = true;
+
   if (!validarCampo('nombre', 'El nombre es obligatorio.')) valido = false;
   if (!validarCampo('email', 'El email es obligatorio.')) valido = false;
   if (!validarCampo('edad', 'La edad es obligatoria.')) valido = false;
 
+  // Si no es válido, no guardar
   if (!valido) return;
 
   const datos = {
@@ -50,45 +57,48 @@ document.getElementById('guardar').addEventListener('click', () => {
 
   alert('💾 Guardando datos...');
 
-  // Si el panel de datos estaba abierto, refrescamos la lista y mantenemos el panel abierto
-  const panelAbierto = contenedorDatos.style.display === 'block';
-  if (panelAbierto) {
-    mostrarUsuarios();
-    toggleBtn.textContent = "Ocultar Datos";
-  }
-
   form.reset();
   barra.style.width = "0%";
-  // Solo ocultamos el contenedor si estaba cerrado antes; si estaba abierto lo dejamos mostrado (ya refrescado)
-  if (!panelAbierto) contenedorDatos.style.display = 'none';
 
+  // QUITAR MENSAJES ROJOS AL LIMPIAR
   campos.forEach(campo => {
     document.getElementById(`error-${campo}`).textContent = "";
   });
 
+  // REFRESCAR AUTOMÁTICAMENTE SI ESTÁN VISIBLES
+  if (contenedorDatos.style.display === 'block') {
+    mostrarUsuarios();
+  }
+
   alert('✅ Datos guardados correctamente.');
 });
 
-// Mostrar usuarios con botón eliminar individual
+// ------------------------------------------------------
+// MOSTRAR USUARIOS
+// ------------------------------------------------------
 function mostrarUsuarios() {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  const usuarios = JSON.parse(localStorage.getItem('usuarios'));
 
   if (!usuarios || usuarios.length === 0) {
     contenedorDatos.innerHTML = `<p><strong>⚠️ No hay datos guardados.</strong></p>`;
     contenedorDatos.style.display = 'block';
-    toggleBtn.textContent = "Ver Datos";
+    toggleBtn.textContent = "Ocultar Datos";
     return;
   }
 
   let html = "";
   usuarios.forEach((usuario, index) => {
     html += `
-      <div class="usuario-card" data-index="${index}">
+      <div style="margin-bottom: 10px;">
         <p><strong>Usuario #${index + 1}</strong></p>
         <p><strong>Nombre:</strong> ${usuario.nombre}</p>
         <p><strong>Email:</strong> ${usuario.email}</p>
         <p><strong>Edad:</strong> ${usuario.edad}</p>
-        <button class="eliminarUsuario" data-index="${index}">🗑️ Eliminar este usuario</button>
+
+        <button onclick="eliminarUsuario(${index})"
+          style="padding:5px 10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">
+          Eliminar Usuario
+        </button>
         <hr>
       </div>
     `;
@@ -96,91 +106,63 @@ function mostrarUsuarios() {
 
   contenedorDatos.innerHTML = html;
   contenedorDatos.style.display = 'block';
-
-  // Asignar evento a cada botón eliminar individual
-  document.querySelectorAll('.eliminarUsuario').forEach(btn => {
-    btn.addEventListener('click', eliminarUsuario);
-  });
+  toggleBtn.textContent = "Ocultar Datos";
 }
 
-// Eliminar usuario individual (handler)
-function eliminarUsuario(e) {
-  const index = parseInt(e.target.getAttribute('data-index'), 10);
+// ------------------------------------------------------
+// ELIMINAR UN SOLO USUARIO
+// ------------------------------------------------------
+function eliminarUsuario(index) {
   let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  if (isNaN(index) || index < 0 || index >= usuarios.length) return;
-
   usuarios.splice(index, 1);
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
-  alert('🗑️ Usuario eliminado con éxito.');
+  alert("🗑️ Usuario eliminado.");
 
-  // Si quedan usuarios, refrescar; si no, mostrar mensaje vacío
   mostrarUsuarios();
 }
 
-// Botón Ver / Ocultar Datos (toggle)
+// ------------------------------------------------------
+// BOTÓN MOSTRAR / OCULTAR
+// ------------------------------------------------------
 toggleBtn.addEventListener('click', () => {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  if (!usuarios || usuarios.length === 0) {
-    alert('⚠️ No hay datos para mostrar.');
-    return;
-  }
-
   if (contenedorDatos.style.display === 'none' || contenedorDatos.style.display === '') {
     mostrarUsuarios();
-    toggleBtn.textContent = 'Ocultar Datos';
   } else {
     contenedorDatos.style.display = 'none';
-    toggleBtn.textContent = 'Ver Datos';
+    toggleBtn.textContent = "Mostrar Datos";
   }
 });
 
-// Borrar todos los datos
+// ------------------------------------------------------
+// BORRAR TODOS LOS DATOS
+// ------------------------------------------------------
 document.getElementById('borrar').addEventListener('click', () => {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-  if (!usuarios || usuarios.length === 0) {
-    alert('⚠️ No hay datos para borrar.');
+  let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+  if (usuarios.length === 0) {
+    alert("⚠️ No hay datos para borrar.");
     return;
   }
 
   localStorage.removeItem('usuarios');
   contenedorDatos.style.display = 'none';
-  barra.style.width = '0%';
-  toggleBtn.textContent = 'Ver Datos';
-  alert('🗑️ Datos borrados del almacenamiento.');
+  toggleBtn.textContent = "Mostrar Datos";
+
+  alert('🗑️ Todos los datos han sido borrados.');
 });
 
-// Limpiar formulario (con comprobación si hay datos)
+// ------------------------------------------------------
+// LIMPIAR FORMULARIO **Y BORRAR MENSAJES ROJOS**
+// ------------------------------------------------------
 document.getElementById('limpiar').addEventListener('click', () => {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  // Si no hay datos en storage, avisar (tal como pediste)
-  if (!usuarios || usuarios.length === 0) {
-    alert('⚠️ No hay datos para limpiar.');
-    return;
-  }
-
-  // Solo limpiar el formulario, no borrar los usuarios del storage
   form.reset();
-  barra.style.width = '0%';
-  contenedorDatos.style.display = 'none';
-  toggleBtn.textContent = 'Ver Datos';
+  barra.style.width = "0%";
+
+  // QUITAR MENSAJES ROJOS
   campos.forEach(campo => {
-    document.getElementById(`error-${campo}`).textContent = '';
+    document.getElementById(`error-${campo}`).textContent = "";
   });
 
-  alert('🧹 Formulario limpio.');
+  alert("🧹 Formulario limpio.");
 });
-
-// Comprobación inicial si no hay nada
-function todoVacio() {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios'));
-  return !usuarios || usuarios.length === 0;
-}
-
-if (todoVacio()) {
-  // No interrumpimos la ejecución; solo una notificación inicial (puedes quitarla si molesta)
-  // alert('📂 No hay datos guardados en el almacenamiento.');
-}
