@@ -7,11 +7,12 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  background: linear-gradient(-45deg, #6a11cb, #2575fc, #8e54e9, #4776e6);
+  background: linear-gradient(-45deg, #00d4ff, #007cf0, #00f5a0, #00c3ff);
   background-size: 400% 400%;
   animation: gradientMove 12s ease infinite;
-  color: #fff;
+  color: #ffffff;
 }
+
 @keyframes gradientMove {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -20,10 +21,10 @@ body {
 
 /* Encabezado */
 header {
-  background-color: #120a48;
+  background-color: #003f5c;
   color: white;
   font-weight: bold;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
   text-align: center;
   padding: 20px 0;
 }
@@ -41,17 +42,17 @@ main {
 }
 
 .card {
-  background: #1f0a57;
+  background: #083d6e;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.2);
   max-width: 500px;
   width: 100%;
 }
 
 h2 {
   text-align: center;
-  color: #ffffff;
+  color: #e9ffff;
   margin-bottom: 20px;
 }
 
@@ -60,16 +61,17 @@ label {
   font-weight: bold;
   display: block;
   margin-top: 10px;
-  color: #e4d9ff;
+  color: #c1f7ff;
 }
 
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #6d50ff;
+  border: 1px solid #00cfff;
   border-radius: 8px;
   margin-top: 5px;
-  background: #f5f5ff;
+  background: #f0feff;
+  color: #000;
 }
 
 .error {
@@ -92,7 +94,7 @@ button {
   flex: 1;
   padding: 10px;
   border: none;
-  background-color: #6d4bff;
+  background-color: #0099cc;
   color: white;
   border-radius: 6px;
   cursor: pointer;
@@ -100,13 +102,13 @@ button {
 }
 
 button:hover {
-  background-color: #4d1df2;
+  background-color: #006f99;
 }
 
 /* Barra progreso */
 .progreso-container {
   width: 100%;
-  background-color: #e0e0e0;
+  background-color: #dff4ff;
   border-radius: 10px;
   height: 12px;
   margin-top: 20px;
@@ -115,7 +117,7 @@ button:hover {
 #barraProgreso {
   height: 100%;
   width: 0%;
-  background-color: #4CAF50;
+  background-color: #21e6a1;
   border-radius: 10px;
   transition: width 0.3s ease;
 }
@@ -124,10 +126,10 @@ button:hover {
 .imagen-container {
   margin-top: 20px;
   padding: 15px;
-  background: #2a0a6f;
-  border: 2px dashed #906cff;
+  background: #0e4d70;
+  border: 2px dashed #00e1ff;
   border-radius: 10px;
-  color: #d7c8ff;
+  color: #d2f9ff;
 }
 
 #previewImagen {
@@ -142,17 +144,17 @@ button:hover {
 /* Datos mostrados */
 .datosMostrados {
   margin-top: 25px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #bcecff;
   display: none;
   color: #000;
 }
 
 .datosMostrados h3 {
   margin-top: 0;
-  color: #000000;
+  color: #003f5c;
 }
 
 .datosMostrados p {
@@ -163,7 +165,7 @@ button:hover {
 /* Footer */
 footer {
   text-align: center;
-  background-color: #120a48;
+  background-color: #003f5c;
   color: white;
   padding: 15px 0;
   margin-top: 40px;
