@@ -16,7 +16,7 @@ function validarCampo(id, mensaje) {
   }
 }
 
-// Actualizar barra de progreso
+// Barra
 function actualizarBarra() {
   let completados = 0;
   campos.forEach(campo => {
@@ -28,7 +28,7 @@ function actualizarBarra() {
 
 form.addEventListener('input', actualizarBarra);
 
-// Guardar datos
+// Guardar usuario
 document.getElementById('guardar').addEventListener('click', () => {
   let valido = true;
   if (!validarCampo('nombre', 'El nombre es obligatorio.')) valido = false;
@@ -47,21 +47,29 @@ document.getElementById('guardar').addEventListener('click', () => {
   usuarios.push(datos);
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
-  alert('💾 Guardando datos...');
+  alert("💾 Guardando datos...");
 
   form.reset();
   barra.style.width = "0%";
-  contenedorDatos.style.display = 'none';
   campos.forEach(campo => {
     document.getElementById(`error-${campo}`).textContent = "";
   });
 
-  alert('✅ Datos guardados correctamente.');
+  alert("✅ Datos guardados correctamente.");
+
+  // ⭐⭐⭐
+  // 🔥 SI EL PANEL DE DATOS ESTÁ ABIERTO → AUTO-REFRESCAR LISTA
+  // ⭐⭐⭐
+  if (contenedorDatos.style.display === "block") {
+    mostrarUsuarios();
+    toggleBtn.textContent = "Ocultar Datos";
+  }
 });
 
-// Función para mostrar usuarios con botón eliminar individual
+// Mostrar usuarios + eliminar individual
 function mostrarUsuarios() {
   const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+
   if (!usuarios || usuarios.length === 0) {
     contenedorDatos.innerHTML = `<p><strong>⚠️ No hay datos guardados.</strong></p>`;
     contenedorDatos.style.display = 'block';
@@ -85,29 +93,29 @@ function mostrarUsuarios() {
   contenedorDatos.innerHTML = html;
   contenedorDatos.style.display = 'block';
 
-  // Asignar evento a cada botón eliminar individual
-  const botonesEliminar = document.querySelectorAll('.eliminarUsuarioBtn');
-  botonesEliminar.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  document.querySelectorAll('.eliminarUsuarioBtn').forEach(btn => {
+    btn.addEventListener('click', e => {
       const index = e.target.parentElement.getAttribute('data-index');
       eliminarUsuario(index);
     });
   });
 }
 
-// Función para eliminar un usuario por índice
+// Eliminar usuario individual
 function eliminarUsuario(index) {
   let usuarios = JSON.parse(localStorage.getItem('usuarios'));
-  usuarios.splice(index, 1); // eliminar el usuario seleccionado
+  usuarios.splice(index, 1);
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
-  mostrarUsuarios(); // refrescar la lista
-  alert('🗑️ Usuario eliminado correctamente.');
+  mostrarUsuarios();
+  alert("🗑️ Usuario eliminado.");
 }
 
-// Botón toggle ver/ocultar usuarios
+// Botón ver/ocultar
 const toggleBtn = document.getElementById('toggleDatos');
+
 toggleBtn.addEventListener('click', () => {
   const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+
   if (!usuarios || usuarios.length === 0) {
     alert("⚠️ No hay datos para mostrar.");
     return;
@@ -122,13 +130,13 @@ toggleBtn.addEventListener('click', () => {
   }
 });
 
-// Borrar todos los usuarios
+// Borrar todo
 document.getElementById('borrar').addEventListener('click', () => {
   localStorage.removeItem('usuarios');
   contenedorDatos.style.display = 'none';
   barra.style.width = "0%";
   toggleBtn.textContent = "Ver Datos";
-  alert('🗑️ Datos borrados del almacenamiento.');
+  alert("🗑️ Datos eliminados.");
 });
 
 // Limpiar formulario
@@ -141,12 +149,11 @@ document.getElementById('limpiar').addEventListener('click', () => {
   });
 });
 
-// Función para comprobar si hay datos
 function todoVacio() {
   const usuarios = JSON.parse(localStorage.getItem('usuarios'));
   return !usuarios || usuarios.length === 0;
 }
 
 if (todoVacio()) {
-  alert('📂 No hay datos guardados en el almacenamiento.');
+  alert("📂 No hay datos guardados en el almacenamiento.");
 }
